@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
-  start();
+  purchasePrompts();
 });
 
 function purchasePrompts() {
@@ -57,13 +57,13 @@ function purchasePrompts() {
 
         //determine if there is enough inventory left
 
-        if (chosenItem.stock_quantity < parseInt(answer.bid)) {
-          // bid was high enough, so update db, let the user know, and start over
+        if (chosenItem.stock_quantity < parseInt(answer.choice)) {
+
           connection.query(
             "UPDATE products SET ? WHERE ?",
             [
               {
-                stock_quantity: answer.bid
+                stock_quantity: answer.choice
               },
               {
                 id: chosenItem.id
@@ -72,14 +72,14 @@ function purchasePrompts() {
             function(error) {
               if (error) throw err;
               console.log("Great we have it in stock!");
-              start();
+              purchasePrompts();
             }
           );
         }
         else {
           // sorry we don't have enough to supply your order, so apologize and start over
-          console.log("Sorry we don't have enough inventory. Please adjust your order");
-          start();
+          console.log("great i will add it to your order");
+          purchasePrompts();
         }
       });
   });
